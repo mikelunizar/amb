@@ -28,7 +28,7 @@ def rrmse_inf(data_ground_truth, data_predicted):
         x_snap = x[i]
         error = x[i] - y[i]
         l2_norm_se = np.linalg.norm(error, ord=2) ** 2 / x.shape[-1]
-        infinite_norm_se = np.linalg.norm(x_snap, ord=np.inf) ** 2
+        infinite_norm_se = np.linalg.norm(x_snap, ord=np.inf) ** 2 + 1e-8
         se_inf.append(l2_norm_se / infinite_norm_se)
     # Cast into array
     mse_inf = np.mean(np.array(se_inf))
