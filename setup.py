@@ -11,7 +11,7 @@ setup(
     description='Library gathering all common scripts for the AMB research team',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
-    url='https://github.com/mikelunizar/amb',
+    url='https://github.com/mikelunizar/amb.git',
     install_requires=[requirements],
     python_requires='>=3.6',
 )
