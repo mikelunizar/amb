@@ -5,6 +5,13 @@ import torch
 def rrmse_inf(data_ground_truth, data_predicted):
     """
     Calculate the Root Mean Squared Error (RMSE) normalized by the infinity norm.
+    
+    Please pay attention to the inputs, it must have the following shape:
+        (snapshots, nodes, variables).
+        E.g. (200, 550, 3) would be 200 snapshots, of a graph of 550 nodes and 3 variables, such as position.
+        E.g. (200, 550, 1) would be 200 snapshots, of a graph of 550 nodes and 1 variable, such as S.Mises.
+        Eg (550, 3) would be taken care of automatically and transformed as (1, 550, 3)
+        E.g. (200, 550) WON'T WORK, because it will interpretate the input as 550 variable vector.
 
     Args:
         data_ground_truth (numpy.ndarray): Ground truth data with shape (snapshot, nodes, variable).
