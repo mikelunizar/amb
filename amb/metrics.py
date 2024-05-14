@@ -22,14 +22,19 @@ def rrmse_inf(data_ground_truth, data_predicted):
         x = np.asarray(x)
         y = np.asarray(y)
 
+    if len(x.shape) == 2:
+        x = np.expand_dims(x, 0)
+        y = np.expand_dims(y, 0)
+
     # Infinity norm calculation
     se_inf = []
     for i in range(x.shape[0]):
         x_snap = x[i]
         error = x[i] - y[i]
-        l2_norm_se = np.linalg.norm(error, ord=2) ** 2 / x.shape[-1]
-        infinite_norm_se = np.linalg.norm(x_snap, ord=np.inf) ** 2 + 1e-8
-        se_inf.append(l2_norm_se / infinite_norm_se)
+        infinite_norm_se = np.linalg.norm(x_snap, ord=np.inf)**2  + 1e-8
+        for j in range(x_snap.shape[0]):
+            l2_norm_se = np.linalg.norm(error[j], ord=2)**2
+            se_inf.append(l2_norm_se / infinite_norm_se)
     # Cast into array
     mse_inf = np.mean(np.array(se_inf))
     # Square root of the mean squared error
