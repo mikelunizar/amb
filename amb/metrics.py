@@ -107,6 +107,6 @@ def L2_MRE(data_ground_truth, data_predicted):
     L2_re = ((e[:,:,:]**2).sum((1,2)) / (gt[:,:,:]**2).sum((1,2)))**0.5
 
     # Mean L2 relative error
-    L2_MRE = np.mean(L2_re)
+    L2_mre = np.mean(L2_re)
 
-    return L2_MRE
+    return L2_mre
