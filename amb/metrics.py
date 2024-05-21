@@ -67,3 +67,46 @@ def rmse(x, y):
     mse = np.mean(se)
 
     return np.sqrt(mse)
+
+def L2_MRE(data_ground_truth, data_predicted):
+    """
+    Calculate the Mean Relative Error normalized l2 norm.
+    
+    Please pay attention to the inputs, it must have the following shape:
+        (snapshots, nodes, variables).
+        E.g. (200, 550, 3) would be 200 snapshots, of a graph of 550 nodes and 3 variables, such as position.
+        E.g. (200, 550, 1) would be 200 snapshots, of a graph of 550 nodes and 1 variable, such as S.Mises.
+        Eg (550, 3) would be taken care of automatically and transformed as (1, 550, 3)
+        E.g. (200, 550) WON'T WORK, because it will interpretate the input as 550 variable vector.
+
+    Args:
+        data_ground_truth (numpy.ndarray): Ground truth data with shape (snapshot, nodes, variable).
+                                           In case of (nodes, variable), it expands snapshot dim to 1.
+        data_predicted (numpy.ndarray): Predicted data with the same shape as data_ground_truth.
+                                        In case of (nodes, variable), it expands snapshot dim to 1.
+
+    Returns:
+        float: RME normalized by the l2 norm.
+    """
+
+    x, y = data_ground_truth, data_predicted
+
+    if isinstance(x, torch.Tensor):
+        x = np.asarray(x)
+        y = np.asarray(y)
+
+    if len(x.shape) == 2:
+        x = np.expand_dims(x, 0)
+        y = np.expand_dims(y, 0)
+
+    # L2 relative norm calculation
+    e = data_ground_truth[1:] - data_predicted[1:] 
+    gt = data_ground_truth[1:] 
+
+    # Position + Velocity + Stress Tensor
+    L2_re = ((e[:,:,:]**2).sum((1,2)) / (gt[:,:,:]**2).sum((1,2)))**0.5
+
+    # Mean L2 relative error
+    L2_mre = np.mean(L2_re)
+
+    return L2_mre
