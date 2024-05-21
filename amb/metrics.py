@@ -68,7 +68,7 @@ def rmse(x, y):
 
     return np.sqrt(mse)
 
-def L2_MRE(data_ground_truth, data_predicted):
+def mse_l2(data_ground_truth, data_predicted):
     """
     Calculate the Mean Relative Error normalized l2 norm.
     
