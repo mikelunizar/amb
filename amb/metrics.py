@@ -5,7 +5,34 @@ import torch
 def rrmse_inf(data_ground_truth, data_predicted):
     """
     Calculate the Root Mean Squared Error (RMSE) normalized by the infinity norm.
-    
+
+    Please pay attention to the inputs, it must have the following shape:
+        (snapshots, nodes, variables).
+        E.g. (200, 550, 3) would be 200 snapshots, of a graph of 550 nodes and 3 variables, such as position.
+        E.g. (200, 550, 1) would be 200 snapshots, of a graph of 550 nodes and 1 variable, such as S.Mises.
+        Eg (550, 3) would be taken care of automatically and transformed as (1, 550, 3)
+        E.g. (200, 550) WON'T WORK, because it will interpretate the input as 550 variable vector.
+
+    Args:
+        data_ground_truth (numpy.ndarray): Ground truth data with shape (snapshot, nodes, variable).
+                                           In case of (nodes, variable), it expands snapshot dim to 1.
+        data_predicted (numpy.ndarray): Predicted data with the same shape as data_ground_truth.
+                                        In case of (nodes, variable), it expands snapshot dim to 1.
+
+    Returns:
+        float: RMSE normalized by the infinity norm.
+    """
+
+    mse_inf(data_ground_truth, data_predicted)
+    rmse_inf = np.sqrt(mse_inf)
+
+    return rmse_inf
+
+
+def mse_inf(data_ground_truth, data_predicted):
+    """
+    Calculate the Mean Squared Error (MSE) normalized by the infinity norm.
+
     Please pay attention to the inputs, it must have the following shape:
         (snapshots, nodes, variables).
         E.g. (200, 550, 3) would be 200 snapshots, of a graph of 550 nodes and 3 variables, such as position.
@@ -38,16 +65,14 @@ def rrmse_inf(data_ground_truth, data_predicted):
     for i in range(x.shape[0]):
         x_snap = x[i]
         error = x[i] - y[i]
-        infinite_norm_se = np.linalg.norm(x_snap, ord=np.inf)**2  + 1e-8
+        infinite_norm_se = np.linalg.norm(x_snap, ord=np.inf) ** 2 + 1e-6
         for j in range(x_snap.shape[0]):
-            l2_norm_se = np.linalg.norm(error[j], ord=2)**2
+            l2_norm_se = np.linalg.norm(error[j], ord=2) ** 2
             se_inf.append(l2_norm_se / infinite_norm_se)
     # Cast into array
     mse_inf = np.mean(np.array(se_inf))
-    # Square root of the mean squared error
-    rmse_inf = np.sqrt(mse_inf)
 
-    return rmse_inf
+    return mse_inf
 
 
 def rmse(x, y):
