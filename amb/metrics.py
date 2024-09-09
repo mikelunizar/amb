@@ -23,9 +23,8 @@ def rrmse_inf(data_ground_truth, data_predicted):
         float: RMSE normalized by the infinity norm.
     """
 
-    mse_inf(data_ground_truth, data_predicted)
-    rmse_inf = np.sqrt(mse_inf)
-
+    rmse_inf = np.sqrt(mse_inf(data_ground_truth, data_predicted))
+    
     return rmse_inf
 
 
